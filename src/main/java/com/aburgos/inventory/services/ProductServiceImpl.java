@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aburgos.inventory.dao.ICategoryDao;
 import com.aburgos.inventory.dao.IProductDao;
@@ -15,6 +16,7 @@ import com.aburgos.inventory.model.Category;
 import com.aburgos.inventory.model.Product;
 import com.aburgos.inventory.response.CategoryResponseRest;
 import com.aburgos.inventory.response.ProductResponseRest;
+import com.aburgos.inventory.util.Util;
 
 @Service
 public class ProductServiceImpl implements IProductService{
@@ -26,18 +28,66 @@ public class ProductServiceImpl implements IProductService{
 	private ICategoryDao categoryDao;
 
 	@Override
+	@Transactional(readOnly = true)
 	public ResponseEntity<ProductResponseRest> search() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ProductResponseRest response = new ProductResponseRest();
+		
+		try {
+			
+			List<Product> products = (List<Product>) productDao.findAll();
+			
+			response.getProduct().setProducts(products);
+			response.setMetadata("Respuesta ok", "00", "Respuesta exitosa");
+			
+		}catch(Exception e) {
+			response.setMetadata("Respuesta nok", "-1", "Error al consultar");
+			e.getStackTrace();
+			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK); 
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ResponseEntity<ProductResponseRest> searchById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		ProductResponseRest response = new ProductResponseRest();
+		List<Product> list  = new ArrayList<>();
+		
+		try {
+			
+			Optional<Product> product = productDao.findById(id);
+			
+			if( product.isPresent() ) {
+				
+				byte[] imageDescompressed = Util.decompressZLib(product.get().getPicture());
+				
+				product.get().setPicture(imageDescompressed);
+				
+				list.add(product.get());
+				response.getProduct().setProducts(list);
+				response.setMetadata("Respuesta ok", "00", "Producto encontrado");
+			
+			}
+			else {
+				response.setMetadata("Respuesta nok", "-1", "Producto no encontrada");
+				return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND); 
+			}
+			
+			
+		}catch(Exception e) {
+			response.setMetadata("Respuesta nok", "-1", "Error al consultar por id");
+			e.getStackTrace();
+			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK); 
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<ProductResponseRest> save(Product product, Long categoryId) {
 		
 		ProductResponseRest response = new ProductResponseRest();
@@ -80,15 +130,31 @@ public class ProductServiceImpl implements IProductService{
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<ProductResponseRest> update(Product product, Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<ProductResponseRest> delete(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		ProductResponseRest response = new ProductResponseRest();
+		
+		try {
+			
+			productDao.deleteById(id);
+			
+			response.setMetadata("Respuesta ok", "00", "Producto eliminada");
+			
+		}catch(Exception e) {
+			response.setMetadata("Respuesta nok", "-1", "Error al eliminar el producto");
+			e.getStackTrace();
+			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK); 
 	}
 
 }

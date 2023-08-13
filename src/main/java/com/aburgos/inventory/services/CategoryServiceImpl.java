@@ -168,7 +168,6 @@ public class CategoryServiceImpl implements ICategoryService{
 	public ResponseEntity<CategoryResponseRest> delete(Long id) {
 
 		CategoryResponseRest response = new CategoryResponseRest();
-		List<Category> list  = new ArrayList<>();
 		
 		try {
 			
