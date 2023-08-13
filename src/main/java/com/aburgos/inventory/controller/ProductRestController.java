@@ -34,6 +34,19 @@ public class ProductRestController {
 	
     private static final Logger logger = LoggerFactory.getLogger(CategoryRestController.class);
 
+    
+    /**
+	 * get all products
+	 * @return
+	 */
+	@GetMapping("/products")
+	public ResponseEntity<ProductResponseRest> searchProducts(){
+		
+		ResponseEntity<ProductResponseRest> response = productService.search();
+		
+		return response;
+	}
+    
     /**
 	 * get products by id
 	 * @param id
@@ -84,6 +97,11 @@ public class ProductRestController {
 		return response;
 	}
 	
+	/**
+	 * delete product
+	 * @param id
+	 * @return
+	 */
 	@DeleteMapping("/products/{id}")
 	public ResponseEntity<ProductResponseRest> delete(@PathVariable Long id){
 	
