@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,14 @@ public class ProductRestController {
 		product.setPicture(Util.compressZLib(picture.getBytes()));
 		
 		ResponseEntity<ProductResponseRest> response = productService.save(product, categoryId);
+		
+		return response;
+	}
+	
+	@DeleteMapping("/products/{id}")
+	public ResponseEntity<ProductResponseRest> delete(@PathVariable Long id){
+	
+		ResponseEntity<ProductResponseRest> response = productService.delete(id);
 		
 		return response;
 	}
