@@ -1,5 +1,7 @@
 package com.aburgos.inventory.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +25,9 @@ public class CategoryRestController {
 	
 	@Autowired
 	private ICategoryService categoryService;
+	
+    private static final Logger logger = LoggerFactory.getLogger(CategoryRestController.class);
+
 
 	/**
 	 * get all categories
@@ -69,8 +74,8 @@ public class CategoryRestController {
 	 * @return
 	 */
 	@PutMapping("/categories/{id}")
-	public ResponseEntity<CategoryResponseRest> save(@RequestBody Category category, @PathVariable Long id){
-	
+	public ResponseEntity<CategoryResponseRest> update(@RequestBody Category category, @PathVariable Long id){
+	        
 		ResponseEntity<CategoryResponseRest> response = categoryService.update(category, id);
 		
 		return response;

@@ -1,15 +1,20 @@
 package com.aburgos.inventory.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.aburgos.inventory.controller.CategoryRestController;
 import com.aburgos.inventory.dao.ICategoryDao;
 import com.aburgos.inventory.model.Category;
 import com.aburgos.inventory.response.CategoryResponseRest;
@@ -19,6 +24,9 @@ public class CategoryServiceImpl implements ICategoryService{
 	
 	@Autowired
 	private ICategoryDao categoryDao;
+	
+    private static final Logger logger = LoggerFactory.getLogger(CategoryRestController.class);
+
 
 	@Override
 	@Transactional(readOnly = true)
