@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,6 +94,31 @@ public class ProductRestController {
 		product.setPicture(Util.compressZLib(picture.getBytes()));
 		
 		ResponseEntity<ProductResponseRest> response = productService.save(product, categoryId);
+		
+		return response;
+	}
+	
+	/**
+	 * update product
+	 * @param product
+	 * @param categoryId
+	 * @param id
+	 * @return
+	 */
+	@PutMapping("/products/{id}")
+	public ResponseEntity<ProductResponseRest> update(
+			@RequestParam("picture") MultipartFile picture, @RequestParam("name") String name,
+			@RequestParam("price") int price, @RequestParam("account") int account,
+			@RequestParam("categoryId") Long categoryId, @PathVariable Long id) throws IOException {
+		
+		Product product = new Product();
+		product.setName(name);
+		product.setAccount(account);
+		product.setPrice(price);
+		
+		product.setPicture(Util.compressZLib(picture.getBytes()));
+	        
+		ResponseEntity<ProductResponseRest> response = productService.update(product, categoryId, id);
 		
 		return response;
 	}
